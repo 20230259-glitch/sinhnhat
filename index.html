@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi anh yêu 💗</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <!-- MÀN HÌNH CHÀO -->
+    <section class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-card">
+            <div class="welcome-decoration">💗 🎀 💗</div>
+
+            <h1>Hí luuuu aiu! 😘</h1>
+
+            <p class="welcome-text">
+                Nhấn vào hộp quà đi anh.
+            </p>
+
+            <button class="welcome-gift" id="welcomeGift"
+                    aria-label="Nhấn để mở hộp quà">
+                🎁
+            </button>
+
+            <p class="secret-message" id="secretMessage">
+                Không có j hết á :)))
+            </p>
+
+            <button class="start-button" id="startButton">
+                NHẤN VÀO ĐÂY NÌIII 🤭
+            </button>
+        </div>
+    </section>
+
+    <!-- TRANG TRÒ CHƠI HỨNG TRÁI TIM -->
+    <section class="heart-game" id="heartGame">
+        <div class="game-card">
+
+            <h3>HỨNG ĐỦ TIM ĐỂ NHẬN QUÀ NHÁAA</h3>
+            <p></p>
+
+            <!-- BẢNG ĐIỂM -->
+            <div class="game-scoreboard">
+                <div class="game-stat">
+                    <span>💗 Điểm</span>
+                    <strong id="heartScore">0</strong>
+                </div>
+
+                <div class="game-stat">
+                    <span>💔 Hụt</span>
+                    <strong id="heartMisses">0/3</strong>
+                </div>
+
+                <div class="game-stat">
+                    <span>🏆 Mục tiêu</span>
+                    <strong>20</strong>
+                </div>
+            </div>
+
+            <!-- KHU VỰC CHƠI -->
+            <div class="heart-game-area" id="heartGameArea">
+
+                <div class="game-start-overlay" id="gameStartOverlay">
+                    <div class="game-start-emoji">🧺💗</div>
+
+                    <p>Thua mất 5 chục đấy</p>
+
+                    <button type="button"
+                            id="heartStartBtn"
+                            class="game-button">
+                        CHƠI THÔI ANH IU! 🤭
+                    </button>
+                </div>
+
+                <div class="game-player"
+                     id="gamePlayer"
+                     aria-label="Giỏ hứng tim">
+                    🧺
+                </div>
+
+            </div>
+
+            <!-- NÚT ĐIỀU KHIỂN -->
+            <div class="game-mobile-controls">
+                <button type="button"
+                        id="gameLeftBtn"
+                        aria-label="Di chuyển sang trái">
+                    ⬅️
+                </button>
+
+                <span>GIỎ HỨNG TIM</span>
+
+                <button type="button"
+                        id="gameRightBtn"
+                        aria-label="Di chuyển sang phải">
+                    ➡️
+                </button>
+            </div>
+
+            
+            <!-- HỘP THOẠI THÔNG BÁO KẾT QUẢ -->
+            <div class="game-message-overlay"
+                id="gameMessageOverlay"
+                hidden>
+
+                <div class="game-message-box"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="gameResultTitle">
+
+                    <button type="button"
+                            class="game-message-close"
+                            id="gameMessageClose"
+                            aria-label="Đóng thông báo">
+                    </button>
+                    
+                    <div class="game-result-emoji" id="gameResultEmoji">
+                    
+                    </div>
+
+                    <img id="gameResultImage"
+                        class="game-result-image"
+                        src=""
+                        alt="Ảnh thông báo kết quả"
+                        hidden>
+
+                    <h3 id="gameResultTitle"></h3>
+
+                    <p id="gameResultText"></p>
+
+                    <button type="button"
+                            id="heartRestartBtn"
+                            class="game-button">
+                        CHƠI LẠI🔄
+                    </button>
+
+                    <button type="button"
+                            id="openGiftBtn"
+                            class="game-button"
+                            hidden>
+                        MỞ QUÀ ĐI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

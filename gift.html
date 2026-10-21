@@ -1,0 +1,787 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💗 Quà sinh nhật dành cho anh</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background: linear-gradient(
+                135deg,
+                #ffe3ef,
+                #fff5fa,
+                #ffc7df
+            );
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Dòng chữ giữa màn hình */
+        .hint-text {
+            color: #d63384;
+            font-size: clamp(20px, 5vw, 30px);
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.7;
+            text-shadow: 0 3px 12px #ff69b455;
+            animation: appear 1s ease both;
+        }
+
+        /* Gợi ý góc trên bên phải */
+        .corner-hint {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            max-width: 180px;
+            padding: 8px 11px;
+            color: #dca5bf;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 173, 210, 0.25);
+            border-radius: 14px;
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: center;
+            opacity: 0;
+            animation: hintAppear 1.2s ease forwards;
+            animation-delay: 1s;
+        }
+
+        /* Nút góc dưới bên trái */
+        .bottom-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 173, 210, 0.25);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.18);
+            color: #dca5bf;
+            font-size: 13px;
+            cursor: pointer;
+            opacity: 0;
+            animation: hintAppear 1.2s ease forwards;
+            animation-delay: 2.5s;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .bottom-hint:hover {
+            color: #d63384;
+            transform: scale(1.05);
+        }
+
+        /* Lớp phủ hộp thoại */
+        .message-overlay[hidden] {
+            display: none !important;
+        }
+
+        .message-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(65, 20, 45, 0.65);
+            backdrop-filter: blur(6px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Hộp thoại */
+        .message-box {
+            position: relative;
+            width: min(92vw, 500px);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px 30px 30px;
+            text-align: center;
+            background: linear-gradient(
+                145deg,
+                #fffafd,
+                #ffe1ef
+            );
+            border: 2px solid #ff9ac8;
+            border-radius: 28px;
+            box-shadow: 0 15px 45px rgba(220, 60, 140, 0.3);
+            animation: popIn 0.4s ease;
+        }
+
+        /* Nút đóng */
+        .close-button {
+            position: absolute;
+            top: 9px;
+            right: 12px;
+            z-index: 5;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #ffd8e9;
+            color: #b83270;
+            font-size: 23px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        .message-box h2 {
+            margin: 8px 0 18px;
+            color: #d63384;
+            font-size: 23px;
+            line-height: 1.5;
+        }
+
+        /* Ảnh */
+        .message-image {
+            display: block;
+            width: 100%;
+            max-height: 330px;
+            object-fit: contain;
+            margin: 0 auto 18px;
+            border-radius: 16px;
+        }
+
+        /* Nội dung thông báo */
+        .message-text {
+            color: #793052;
+            font-size: 16px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .message-text strong {
+            color: #e04491;
+        }
+
+        /* Hai nút Có / Không */
+        .answer-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .answer-btn {
+            min-width: 135px;
+            padding: 13px 24px;
+            border: 2px solid transparent;
+            border-radius: 30px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        /* Nút Có */
+        .yes-btn {
+            background: linear-gradient(
+                135deg,
+                #ff85b8,
+                #ff3f87
+            );
+            border-color: #ffb2d0;
+            box-shadow: 0 5px 15px rgba(255, 63, 135, 0.25);
+        }
+
+        .yes-btn:hover {
+            background: linear-gradient(
+                135deg,
+                #ff69a8,
+                #f72575
+            );
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 63, 135, 0.35);
+        }
+
+        /* Nút Không */
+        .no-btn {
+            position: relative;
+            background: linear-gradient(
+                135deg,
+                #c8b8d9,
+                #9c89b8
+            );
+            border-color: #e0d3ed;
+            box-shadow: 0 5px 15px rgba(156, 137, 184, 0.25);
+        }
+
+        .no-btn:hover {
+            background: linear-gradient(
+                135deg,
+                #b8a2d0,
+                #8972aa
+            );
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(156, 137, 184, 0.35);
+        }
+
+        /* Đổi chữ Không thành lời nhắc ngay tại chỗ */
+        .no-original {
+            display: inline;
+        }
+
+        .no-hover-text {
+            display: none;
+            white-space: nowrap;
+        }
+
+        .no-btn:hover .no-original {
+            display: none;
+        }
+
+        .no-btn:hover .no-hover-text {
+            display: inline;
+        }
+
+        .answer-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Hộp thoại Giỏi ròi */
+        .success-box h2 {
+            margin-top: 12px;
+        }
+
+        /* Lời chúc sinh nhật */
+        .birthday-message {
+            text-align: center;
+        }
+
+        .birthday-message h2 {
+            margin: 12px 0 18px;
+        }
+
+        #birthdayTitle1 {
+            color: #d63384;
+        }
+
+        #birthdayTitle2 {
+            color: #e04491;
+        }
+
+        #birthdayText {
+            text-align: center;
+            white-space: pre-line;
+            line-height: 1.9;
+        }
+
+        /* Con trỏ nhấp nháy khi đánh máy */
+        .typing-cursor::after {
+            content: "|";
+            display: inline-block;
+            margin-left: 2px;
+            color: #e04491;
+            animation: blink 0.7s steps(1) infinite;
+        }
+
+        /* Hiệu ứng */
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes hintAppear {
+            from { opacity: 0; }
+            to { opacity: 0.65; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Điện thoại */
+        @media (max-width: 480px) {
+            .corner-hint {
+                top: 12px;
+                right: 12px;
+                max-width: 150px;
+                font-size: 11px;
+            }
+
+            .bottom-hint {
+                bottom: 14px;
+                left: 14px;
+                font-size: 12px;
+            }
+
+            .message-box {
+                padding: 35px 18px 22px;
+            }
+
+            .message-box h2 {
+                font-size: 21px;
+            }
+
+            .message-image {
+                max-height: 280px;
+            }
+
+            .answer-buttons {
+                gap: 12px;
+                margin-top: 20px;
+            }
+
+            .answer-btn {
+                min-width: 115px;
+                padding: 12px 18px;
+                font-size: 15px;
+            }
+
+            .no-btn:hover .no-hover-text {
+                white-space: normal;
+            }
+
+            .message-text {
+                font-size: 15px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+/* ===== NỀN LỜI CHÚC SINH NHẬT ===== */
+.birthday-message {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 22px 16px;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 10% 15%, #ffffff 0 2px, transparent 3px),
+        radial-gradient(circle at 85% 20%, #ffadd2 0 3px, transparent 4px),
+        radial-gradient(circle at 15% 85%, #ffc5df 0 3px, transparent 4px),
+        linear-gradient(145deg, #fff8fc, #ffe4f0, #fff0f7);
+    background-size: 100% 100%;
+    text-align: center;
+}
+
+/* Nội dung nằm trên hiệu ứng nền */
+.birthday-message > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Vầng sáng hồng chuyển động */
+.birthday-message::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: 220px;
+    height: 220px;
+    top: -100px;
+    right: -80px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 105, 180, 0.28),
+        rgba(255, 192, 220, 0.08) 55%,
+        transparent 70%
+    );
+    animation: pinkGlow 5s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+/* Ánh sáng thứ hai */
+.birthday-message::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -80px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 150, 200, 0.25),
+        transparent 70%
+    );
+    animation: pinkGlow 6s ease-in-out infinite alternate-reverse;
+    pointer-events: none;
+}
+
+@keyframes pinkGlow {
+    from {
+        transform: translate(0, 0) scale(0.9);
+        opacity: 0.5;
+    }
+    to {
+        transform: translate(25px, 18px) scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Trang trí trái tim bay */
+.floating-heart {
+    position: absolute;
+    z-index: 1;
+    bottom: -35px;
+    color: #ff69a8;
+    opacity: 0;
+    pointer-events: none;
+    animation: floatHeart 7s linear infinite;
+}
+
+.floating-heart:nth-of-type(1) {
+    left: 8%;
+    font-size: 19px;
+    animation-delay: 0s;
+}
+
+.floating-heart:nth-of-type(2) {
+    left: 28%;
+    font-size: 13px;
+    animation-delay: 2s;
+}
+
+.floating-heart:nth-of-type(3) {
+    left: 68%;
+    font-size: 21px;
+    animation-delay: 1s;
+}
+
+.floating-heart:nth-of-type(4) {
+    left: 88%;
+    font-size: 15px;
+    animation-delay: 3s;
+}
+
+@keyframes floatHeart {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.65;
+    }
+    80% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-420px) rotate(25deg);
+        opacity: 0;
+    }
+}
+
+/* Tạo điểm nhấn cho lời chúc */
+#birthdayTitle1 {
+    text-shadow: 0 3px 12px rgba(255, 105, 180, 0.25);
+}
+
+#birthdayTitle2 {
+    text-shadow: 0 3px 12px rgba(255, 105, 180, 0.2);
+}
+
+#birthdayText {
+    text-shadow: 0 1px 8px rgba(255, 255, 255, 0.7);
+}
+
+/* Tắt chuyển động nếu người dùng chọn giảm hiệu ứng */
+@media (prefers-reduced-motion: reduce) {
+    .birthday-message::before,
+    .birthday-message::after,
+    .floating-heart {
+        animation: none;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Dòng chữ chính giữa -->
+    <div class="hint-text">
+        Nhìn sang góc trên bên phải đi anh
+    </div>
+
+    <!-- Gợi ý góc trên bên phải -->
+    <div class="corner-hint">
+        Ở góc dưới bên trái kia kìa
+    </div>
+
+    <!-- Nút mở hộp thoại đầu tiên -->
+    <button type="button" class="bottom-hint" id="openMessageBtn">
+        Nhấn vào đây đi 💗
+    </button>
+
+    <!-- HỘP THOẠI 1: HỎI CÓ IU EM KHÔNG -->
+    <div class="message-overlay" id="messageOverlay" hidden>
+        <div class="message-box"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="messageTitle">
+
+            <button type="button"
+                    class="close-button"
+                    id="closeMessageBtn"
+                    aria-label="Đóng thông báo">×</button>
+
+            <img class="message-image"
+                 src="7.png"
+                 alt="Ảnh dành tặng anh">
+
+            <h2 id="messageTitle">Anh có iu em không áaa</h2>
+
+            <div class="answer-buttons">
+                <button type="button"
+                        class="answer-btn yes-btn"
+                        id="yesBtn">
+                    Có
+                </button>
+
+                <button type="button"
+                        class="answer-btn no-btn"
+                        id="noBtn">
+                    <span class="no-original">Không</span>
+                    <span class="no-hover-text">Anh thử nhấn không xem 😏</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HỘP THOẠI 2: KHI NHẤN KHÔNG -->
+    <div class="message-overlay" id="successOverlay" hidden>
+        <div class="message-box success-box"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="successTitle">
+
+            <button type="button"
+                    class="close-button"
+                    id="closeSuccessBtn"
+                    aria-label="Đóng thông báo">×</button>
+
+            <img src="8.png"
+                 alt="Ảnh chúc mừng"
+                 class="message-image">
+
+            <h2 id="successTitle">Chóa Nguyên giỏi r</h2>
+        </div>
+    </div>
+
+    <!-- HỘP THOẠI 3: LỜI CHÚC KHI NHẤN CÓ -->
+    <div class="message-overlay" id="birthdayOverlay" hidden>
+        <div class="message-box"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="birthdayTitle1">
+
+            <button type="button"
+                    class="close-button"
+                    id="closeBirthdayBtn"
+                    aria-label="Đóng lời chúc">×</button>
+
+            <div class="birthday-message">
+                
+                <h2 id="birthdayTitle1">Hứ</h2>
+
+                <h2 id="birthdayTitle2">
+                    Thí em chúc mừng sinh nhật aiu nhóo
+                </h2>
+
+                <p class="message-text" id="birthdayText">Chúc anh tuổi mới luôn vui vẻ, mạnh khỏe,
+gặp thật nhiều may mắn và thành công trên con đường mình chọn nhaaa.
+Đi làm kiếm được nhiều xiền cho eiu nhó.
+Phải iu em nhiều hơn á, hú hí với con nào là cụt ch*m biết chưa.
+
+Yêu anh nhiều lắm 💕</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const openMessageBtn = document.getElementById("openMessageBtn");
+        const messageOverlay = document.getElementById("messageOverlay");
+        const closeMessageBtn = document.getElementById("closeMessageBtn");
+
+        const noBtn = document.getElementById("noBtn");
+        const successOverlay = document.getElementById("successOverlay");
+        const closeSuccessBtn = document.getElementById("closeSuccessBtn");
+
+        const yesBtn = document.getElementById("yesBtn");
+        const birthdayOverlay = document.getElementById("birthdayOverlay");
+        const closeBirthdayBtn = document.getElementById("closeBirthdayBtn");
+
+        // Mở hộp thoại hỏi
+        openMessageBtn.addEventListener("click", function () {
+            messageOverlay.hidden = false;
+        });
+
+        // Đóng hộp thoại hỏi
+        closeMessageBtn.addEventListener("click", function () {
+            messageOverlay.hidden = true;
+        });
+
+        // Nhấn Không để mở hộp thoại Giỏi ròi
+        noBtn.addEventListener("click", function () {
+            messageOverlay.hidden = true;
+            successOverlay.hidden = false;
+        });
+
+        // Đóng hộp thoại Giỏi ròi
+        closeSuccessBtn.addEventListener("click", function () {
+            successOverlay.hidden = true;
+        });
+
+        // Nhấn Có để mở hộp thoại lời chúc
+        yesBtn.addEventListener("click", function () {
+            messageOverlay.hidden = true;
+            birthdayOverlay.hidden = false;
+
+            startBirthdayTyping();
+        });
+
+        // Đóng hộp thoại lời chúc
+        closeBirthdayBtn.addEventListener("click", function () {
+            birthdayOverlay.hidden = true;
+        });
+
+        // Nhấn ra ngoài hộp thoại để đóng
+        [
+            messageOverlay,
+            successOverlay,
+            birthdayOverlay
+        ].forEach(function (overlay) {
+            overlay.addEventListener("click", function (event) {
+                if (event.target === overlay) {
+                    overlay.hidden = true;
+                }
+            });
+        });
+
+        // Nhấn Escape để đóng các hộp thoại
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                messageOverlay.hidden = true;
+                successOverlay.hidden = true;
+                birthdayOverlay.hidden = true;
+            }
+        });
+
+        // Hiệu ứng đánh máy từng ký tự
+        function typeText(element, speed, onComplete) {
+            // Array.from giúp xử lý emoji đúng cách
+            const characters = Array.from(element.dataset.originalText);
+            let index = 0;
+
+            element.textContent = "";
+            element.classList.add("typing-cursor");
+
+            function typeNext() {
+                if (index < characters.length) {
+                    element.textContent += characters[index];
+                    index++;
+                    setTimeout(typeNext, speed);
+                } else {
+                    element.classList.remove("typing-cursor");
+
+                    if (typeof onComplete === "function") {
+                        onComplete();
+                    }
+                }
+            }
+
+            typeNext();
+        }
+
+        let typingStarted = false;
+        let typingTimers = [];
+
+        function clearTypingTimers() {
+            typingTimers.forEach(function (timer) {
+                clearTimeout(timer);
+            });
+
+            typingTimers = [];
+        }
+
+        function startBirthdayTyping() {
+            const title1 = document.getElementById("birthdayTitle1");
+            const title2 = document.getElementById("birthdayTitle2");
+            const paragraph = document.getElementById("birthdayText");
+
+            if (!title1 || !title2 || !paragraph) return;
+
+            // Lưu nội dung gốc để có thể mở lại hộp thoại
+            if (!title1.dataset.originalText) {
+                title1.dataset.originalText = title1.textContent.trim();
+                title2.dataset.originalText = title2.textContent.trim();
+                paragraph.dataset.originalText = paragraph.textContent.trim();
+            }
+
+            // Tránh chạy lại hiệu ứng mỗi lần mở
+            if (typingStarted) return;
+
+            typingStarted = true;
+            clearTypingTimers();
+
+            title1.textContent = "";
+            title2.textContent = "";
+            paragraph.textContent = "";
+
+            // Dòng 1: Hứ
+            typeText(title1, 180, function () {
+                // Dòng 2: lời chúc sinh nhật
+                typingTimers.push(setTimeout(function () {
+                    typeText(title2, 75, function () {
+                        // Nội dung lời chúc dài
+                        typingTimers.push(setTimeout(function () {
+                            typeText(paragraph, 28);
+                        }, 350));
+                    });
+                }, 350));
+            });
+        }
+    </script>
+
+</body>
+</html>
