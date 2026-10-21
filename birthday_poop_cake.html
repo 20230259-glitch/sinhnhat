@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bánh sinh nhật đặc biệt 💩</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #fff1f7, #f3e8ff, #fff7ed);
+    color: #292929;
+}
+
+.card {
+    width: min(100%, 800px);
+    padding: 28px 22px;
+    text-align: center;
+    background: white;
+    border: 1px solid #f3d7e5;
+    border-radius: 24px;
+    box-shadow: 0 12px 35px #9d64851a;
+}
+
+h1 {
+    font-size: clamp(25px, 5vw, 36px);
+    margin: 12px 0;
+    color: #db4f8a;
+}
+
+p {
+    color: #666;
+    line-height: 1.7;
+}
+
+.game-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    gap: 20px;
+    margin: 24px 0;
+}
+
+.panel {
+    min-width: 0;
+    padding: 14px 10px;
+    border: 1px solid #f1dce7;
+    border-radius: 18px;
+    background: #fffafd;
+}
+
+.panel h2 {
+    font-size: 16px;
+    margin: 4px 0 12px;
+}
+
+/* BÁNH */
+.cake-area {
+    height: 255px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: visible;
+}
+
+.cake {
+    position: relative;
+    width: 220px;
+    height: 210px;
+    transform-origin: center;
+}
+
+.plate {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 30px;
+    border: 3px solid #d1d5db;
+    background: white;
+    border-radius: 50%;
+}
+
+.poop {
+    position: absolute;
+    bottom: 12px;
+    left: 15px;
+    width: 190px;
+    height: 160px;
+    transition: transform .7s ease;
+}
+
+.layer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid #674027;
+    background: linear-gradient(135deg, #b78056, #815033);
+    border-radius: 50%;
+}
+
+.l1 { bottom: 0; width: 190px; height: 75px; }
+.l2 { bottom: 43px; width: 155px; height: 70px; }
+.l3 { bottom: 81px; width: 118px; height: 60px; }
+.l4 { bottom: 115px; width: 76px; height: 48px; }
+
+.l5 {
+    bottom: 150px;
+    width: 38px;
+    height: 35px;
+    border-radius: 70% 40% 20% 20%;
+    transform: translateX(-40%) rotate(-20deg);
+}
+
+.face {
+    position: absolute;
+    bottom: 19px;
+    left: 65px;
+    font-size: 27px;
+    letter-spacing: 7px;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.candle {
+    position: absolute;
+    z-index: 4;
+    top: 13px;
+    left: calc(50% - 6px);
+    width: 13px;
+    height: 48px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+        135deg,
+        #fff 0 7px,
+        #9ca3af 7px 12px
+    );
+    transition: .4s;
+}
+
+.flame {
+    position: absolute;
+    top: -21px;
+    left: 1px;
+    width: 12px;
+    height: 19px;
+    border-radius: 50% 50% 45% 45%;
+    background: #ffad33;
+    box-shadow: 0 0 15px #ffc65c;
+    animation: flicker .5s infinite alternate;
+}
+
+@keyframes flicker {
+    to {
+        transform: scale(1.15) rotate(7deg);
+    }
+}
+
+/* MIẾNG BÁNH */
+.slice {
+    position: absolute;
+    z-index: 5;
+    right: 0;
+    bottom: 38px;
+    width: 48px;
+    height: 78px;
+    border: 4px solid #674027;
+    border-radius: 48% 38% 30% 35%;
+    background: linear-gradient(135deg, #bd8a60, #8b5737);
+    box-shadow: inset -5px 0 0 #70452e;
+    opacity: 0;
+    transform: translateX(0) rotate(0);
+    transition: opacity .5s, transform .7s;
+    cursor: not-allowed;
+    touch-action: none;
+    user-select: none;
+}
+
+.slice::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 10px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d8ad82;
+}
+
+.cut .poop {
+    transform: translateX(-12px) rotate(-4deg);
+}
+
+.cut .candle {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.cut .slice {
+    opacity: 1;
+    transform: translate(14px, 12px) rotate(12deg);
+    cursor: grab;
+}
+
+.cut .slice.dragging {
+    position: fixed;
+    z-index: 9999;
+    right: auto;
+    bottom: auto;
+    opacity: 1;
+    transform: rotate(12deg) scale(1.08);
+    transition: none;
+    cursor: grabbing;
+    pointer-events: none;
+}
+
+.slice.delivered {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* KHUNG ẢNH */
+.photo-drop {
+    position: relative;
+    min-height: 245px;
+    padding: 10px;
+    border: 2px dashed #e5a8c4;
+    border-radius: 15px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: border-color .25s, background .25s;
+}
+
+.photo-drop.ready {
+    border-color: #ec4899;
+}
+
+.photo-drop.drag-over {
+    border-color: #db2777;
+    background: #fdf2f8;
+    box-shadow: 0 0 0 4px #fce7f3;
+}
+
+/* Hiển thị ảnh đầy đủ, không cố định chiều cao */
+.photo-drop img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.photo-caption {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.drop-hint {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* NÚT */
+button {
+    padding: 13px 21px;
+    margin: 5px;
+    border: 0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s, background .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#cutBtn {
+    background: #ec4899;
+    color: white;
+}
+
+#resetBtn {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.status {
+    min-height: 28px;
+    margin: 12px 0 0;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.message {
+    display: none;
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 15px;
+    background: #fff1f7;
+    animation: appear .6s ease;
+}
+
+.message.show {
+    display: block;
+}
+
+.message h2 {
+    font-size: 22px;
+    margin-top: 0;
+    color: #db2777;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ĐIỆN THOẠI */
+@media (max-width: 560px) {
+    body {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 22px 12px;
+    }
+
+    .game-area {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .panel {
+        padding: 12px;
+    }
+
+    .cake-area {
+        height: 245px;
+    }
+
+    .photo-drop {
+        min-height: 180px;
+    }
+
+    .photo-drop img {
+        max-height: 420px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+/* PHÁO HOA TOÀN MÀN HÌNH */
+#fireworksCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    pointer-events: none;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+<canvas id="fireworksCanvas"></canvas>
+<main class="card" id="card">
+
+    <h1>Háp pi niu diaaaaa</h1>
+    <p></p>
+
+    <div class="game-area">
+
+        <!-- BÊN TRÁI: BÁNH -->
+        <section class="panel">
+            <h2></h2>
+
+            <div class="cake-area">
+                <div class="cake">
+                    <div class="plate"></div>
+
+                    <div class="poop">
+                        <div class="layer l1"></div>
+                        <div class="layer l2"></div>
+                        <div class="layer l3"></div>
+                        <div class="layer l4"></div>
+                        <div class="layer l5"></div>
+                        <div class="face">•ᴗ•</div>
+                    </div>
+
+                    <div class="candle">
+                        <span class="flame"></span>
+                    </div>
+
+                    <div
+                        class="slice"
+                        id="cakeSlice"
+                        role="button"
+                        aria-label="Kéo miếng bánh vào ảnh"
+                        title="Cắt bánh xong, kéo miếng này vào ảnh"
+                    ></div>
+                </div>
+            </div>
+
+            <p class="photo-caption">Cắt bánh rồi lấy một miếng nhé! 😂</p>
+        </section>
+
+        <!-- BÊN PHẢI: ẢNH NGƯỜI YÊU -->
+        <section class="panel">
+            <h2></h2>
+
+            <div class="photo-drop" id="photoDrop">
+                <img
+                    id="loverPhoto"
+                    src="10.png"
+                    alt="Ảnh người yêu"
+                >
+
+                <p class="drop-hint" id="dropHint">
+                    Kéo miếng bánh thả vào đây 😏
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="controls">
+        <button id="cutBtn">🔪 CẮT BÁNH</button>
+        <button id="resetBtn">↻ Làm lại</button>
+    </div>
+
+    <p class="status" id="status" aria-live="polite">
+        Đang chờ đầu bếp ra tay...
+    </p>
+
+</main>
+
+<script>
+const card = document.getElementById("card");
+const cutBtn = document.getElementById("cutBtn");
+const resetBtn = document.getElementById("resetBtn");
+const cakeSlice = document.getElementById("cakeSlice");
+const photoDrop = document.getElementById("photoDrop");
+const dropHint = document.getElementById("dropHint");
+const statusText = document.getElementById("status");
+const successMessage = document.getElementById("successMessage");
+
+let isDragging = false;
+let delivered = false;
+let offsetX = 0;
+let offsetY = 0;
+/* ===== HIỆU ỨNG PHÁO HOA SINH NHẬT ===== */
+const fireworksCanvas = document.getElementById("fireworksCanvas");
+const fireworksCtx = fireworksCanvas.getContext("2d");
+
+let fireworksRunning = false;
+let fireworksFrame = null;
+let fireworksTimer = null;
+let fireworksParticles = [];
+
+function resizeFireworksCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    fireworksCanvas.width = window.innerWidth * dpr;
+    fireworksCanvas.height = window.innerHeight * dpr;
+
+    fireworksCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+window.addEventListener("resize", resizeFireworksCanvas);
+resizeFireworksCanvas();
+
+/* Tạo một chùm pháo hoa */
+function createFirework(x, y) {
+    const colors = [
+        "#ff4d6d",
+        "#ffbe0b",
+        "#fb5607",
+        "#8338ec",
+        "#3a86ff",
+        "#06d6a0",
+        "#ff66c4",
+        "#ffffff"
+    ];
+
+    const color = colors[
+        Math.floor(Math.random() * colors.length)
+    ];
+
+    const count = 65 + Math.floor(Math.random() * 45);
+
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.5 + Math.random() * 5;
+
+        fireworksParticles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            alpha: 1,
+            decay: 0.008 + Math.random() * 0.014,
+            size: 1.5 + Math.random() * 2.5,
+            color: color,
+            gravity: 0.035 + Math.random() * 0.035
+        });
+    }
+}
+
+/* Bắn pháo hoa ở vị trí ngẫu nhiên */
+function launchRandomFirework() {
+    if (!fireworksRunning) return;
+
+    const margin = 50;
+
+    const x = margin + Math.random() *
+        Math.max(1, window.innerWidth - margin * 2);
+
+    const y = 50 + Math.random() *
+        Math.max(1, window.innerHeight * 0.65);
+
+    createFirework(x, y);
+}
+
+/* Vòng lặp hoạt ảnh */
+function animateFireworks() {
+    if (!fireworksRunning) return;
+
+    fireworksCtx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    fireworksParticles = fireworksParticles.filter(
+        particle => particle.alpha > 0.02
+    );
+
+    for (const particle of fireworksParticles) {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        particle.vx *= 0.985;
+        particle.vy *= 0.985;
+        particle.vy += particle.gravity;
+        particle.alpha -= particle.decay;
+
+        fireworksCtx.globalAlpha = Math.max(0, particle.alpha);
+        fireworksCtx.fillStyle = particle.color;
+        fireworksCtx.beginPath();
+
+        fireworksCtx.arc(
+            particle.x,
+            particle.y,
+            particle.size,
+            0,
+            Math.PI * 2
+        );
+
+        fireworksCtx.fill();
+    }
+
+    fireworksCtx.globalAlpha = 1;
+
+    fireworksFrame = requestAnimationFrame(animateFireworks);
+}
+
+/* Bắt đầu lễ hội pháo hoa */
+function startFireworks() {
+    if (fireworksRunning) return;
+
+    fireworksRunning = true;
+    fireworksParticles = [];
+
+    fireworksCanvas.style.display = "block";
+    resizeFireworksCanvas();
+
+    // Nổ ngay nhiều chùm khắp màn hình
+    for (let i = 0; i < 9; i++) {
+        createFirework(
+            30 + Math.random() * (window.innerWidth - 60),
+            40 + Math.random() * (window.innerHeight * 0.65)
+        );
+    }
+
+    animateFireworks();
+
+    // Tiếp tục bắn pháo hoa trong 12 giây
+    fireworksTimer = setInterval(() => {
+        if (fireworksRunning) {
+            launchRandomFirework();
+
+            if (Math.random() > 0.4) {
+                launchRandomFirework();
+            }
+        }
+    }, 280);
+
+    setTimeout(() => {
+        stopFireworks();
+    }, 15000);
+}
+
+/* Dừng pháo hoa */
+function stopFireworks() {
+    fireworksRunning = false;
+
+    if (fireworksTimer !== null) {
+        clearInterval(fireworksTimer);
+        fireworksTimer = null;
+    }
+
+    if (fireworksFrame !== null) {
+        cancelAnimationFrame(fireworksFrame);
+        fireworksFrame = null;
+    }
+
+    fireworksParticles = [];
+    fireworksCtx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    fireworksCanvas.style.display = "none";
+}
+/* Cắt bánh */
+cutBtn.addEventListener("click", () => {
+    if (card.classList.contains("cut")) return;
+
+    card.classList.add("cut");
+    cutBtn.textContent = "✅ ĐÃ CẮT BÁNH";
+    cutBtn.disabled = true;
+
+    statusText.textContent =
+        "Ăn bánh đi anh";
+
+    photoDrop.classList.add("ready");
+});
+
+/* Bắt đầu kéo miếng bánh */
+cakeSlice.addEventListener("pointerdown", (event) => {
+    if (!card.classList.contains("cut") || delivered) return;
+
+    event.preventDefault();
+
+    isDragging = true;
+
+    const rect = cakeSlice.getBoundingClientRect();
+
+    offsetX = event.clientX - rect.left;
+    offsetY = event.clientY - rect.top;
+
+    cakeSlice.classList.add("dragging");
+
+    cakeSlice.style.left = rect.left + "px";
+    cakeSlice.style.top = rect.top + "px";
+    cakeSlice.style.width = rect.width + "px";
+    cakeSlice.style.height = rect.height + "px";
+
+    moveSlice(event.clientX, event.clientY);
+
+    statusText.textContent = "Đang vận chuyển bánh... 🍰";
+});
+
+/* Di chuyển bánh theo chuột hoặc ngón tay */
+function moveSlice(clientX, clientY) {
+    if (!isDragging) return;
+
+    cakeSlice.style.left = (clientX - offsetX) + "px";
+    cakeSlice.style.top = (clientY - offsetY) + "px";
+
+    const target = document.elementFromPoint(clientX, clientY);
+    const overPhoto = target && photoDrop.contains(target);
+
+    photoDrop.classList.toggle("drag-over", Boolean(overPhoto));
+}
+
+/* Thả miếng bánh */
+document.addEventListener("pointerup", (event) => {
+    if (!isDragging) return;
+
+    isDragging = false;
+
+    const target = document.elementFromPoint(
+        event.clientX,
+        event.clientY
+    );
+
+    const overPhoto = target && photoDrop.contains(target);
+
+    photoDrop.classList.remove("drag-over");
+
+    if (overPhoto) {
+        deliverSlice();
+    } else {
+        cakeSlice.classList.remove("dragging");
+        returnSliceToCake();
+
+        statusText.textContent =
+            "Chưa trúng ảnh rồi! Thử kéo miếng bánh vào ảnh nhé 😆";
+    }
+});
+
+/* Tránh kéo trang khi đang kéo bánh trên điện thoại */
+document.addEventListener("pointermove", (event) => {
+    if (!isDragging) return;
+
+    event.preventDefault();
+    moveSlice(event.clientX, event.clientY);
+}, { passive: false });
+
+/* Thả đúng vào ảnh */
+
+function deliverSlice() {
+    if (delivered) return;
+
+    delivered = true;
+
+    cakeSlice.classList.add("delivered");
+    cakeSlice.classList.remove("dragging");
+    cakeSlice.style.pointerEvents = "none";
+
+    photoDrop.classList.remove("ready", "drag-over");
+
+    dropHint.textContent = "Đã ăn bánh xong hí hí 💕";
+
+    statusText.textContent =
+        "Aiu sinh nhật vui vẻ nhóoooo";
+
+    // Bắn pháo hoa toàn màn hình
+    startFireworks();
+}
+
+
+/* Thả sai chỗ: bánh trở về vị trí cũ */
+function returnSliceToCake() {
+    cakeSlice.style.left = "";
+    cakeSlice.style.top = "";
+    cakeSlice.style.width = "";
+    cakeSlice.style.height = "";
+}
+
+/* Chơi lại từ đầu */
+resetBtn.addEventListener("click", () => {
+stopFireworks();
+
+    isDragging = false;
+    delivered = false;
+
+    card.classList.remove("cut");
+    cakeSlice.classList.remove("dragging", "delivered");
+
+    cakeSlice.style.left = "";
+    cakeSlice.style.top = "";
+    cakeSlice.style.width = "";
+    cakeSlice.style.height = "";
+    cakeSlice.style.pointerEvents = "";
+
+    photoDrop.classList.remove("ready", "drag-over");
+
+    cutBtn.textContent = "🔪 CẮT BÁNH";
+    cutBtn.disabled = false;
+
+    dropHint.textContent = "Kéo miếng bánh thả vào đây 😏";
+    statusText.textContent = "Đang chờ đầu bếp ra tay...";
+
+    successMessage.classList.remove("show");
+});
+</script>
+
+</body>
+</html>

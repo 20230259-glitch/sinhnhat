@@ -533,6 +533,89 @@
     }
 }
 
+/* ===== NÚT ĐI CẮT BÁNH ===== */
+.go-cut-cake-btn {
+    display: block;
+    margin: 26px auto 0;
+    padding: 14px 28px;
+
+    border: 1.5px solid #f3a6c8;
+    border-radius: 30px;
+
+    background: linear-gradient(
+        135deg,
+        #fffafd,
+        #ffe6f1
+    );
+
+    color: #c43d7d;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 15px rgba(214, 51, 132, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+/* Hiệu ứng khi rê chuột */
+.go-cut-cake-btn:hover {
+    background: linear-gradient(
+        135deg,
+        #ffeaf4,
+        #ffd5e8
+    );
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(214, 51, 132, 0.2);
+}
+
+/* Hiệu ứng khi nhấn */
+.go-cut-cake-btn:active {
+    transform: scale(0.96);
+}
+
+/* Ẩn nút cho đến khi lời chúc đánh máy xong */
+#goCutCakeBtn[hidden] {
+    display: none !important;
+}
+
+/* Hiệu ứng xuất hiện */
+#goCutCakeBtn.show {
+    animation: cakeButtonAppear 0.7s ease both;
+}
+
+@keyframes cakeButtonAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Tối ưu cho điện thoại */
+@media (max-width: 480px) {
+    .go-cut-cake-btn {
+        max-width: 100%;
+        padding: 13px 20px;
+        font-size: 14px;
+    }
+}
+
     </style>
 </head>
 
@@ -634,6 +717,16 @@ gặp thật nhiều may mắn và thành công trên con đường mình chọn
 Phải iu em nhiều hơn á, hú hí với con nào là cụt ch*m biết chưa.
 
 Yêu anh nhiều lắm 💕</p>
+<button
+    type="button"
+    id="goCutCakeBtn"
+    class="go-cut-cake-btn"
+    hidden
+    onclick="window.location.href='birthday_poop_cake.html'">
+    🎂 ĐI CẮT BÁNH THUI
+</button>
+
+
             </div>
         </div>
     </div>
@@ -764,23 +857,55 @@ Yêu anh nhiều lắm 💕</p>
             typingStarted = true;
             clearTypingTimers();
 
-            title1.textContent = "";
-            title2.textContent = "";
-            paragraph.textContent = "";
+            
+title1.textContent = "";
+title2.textContent = "";
+paragraph.textContent = "";
 
-            // Dòng 1: Hứ
-            typeText(title1, 180, function () {
-                // Dòng 2: lời chúc sinh nhật
-                typingTimers.push(setTimeout(function () {
-                    typeText(title2, 75, function () {
-                        // Nội dung lời chúc dài
-                        typingTimers.push(setTimeout(function () {
-                            typeText(paragraph, 28);
-                        }, 350));
-                    });
-                }, 350));
-            });
+// Ẩn nút cắt bánh khi bắt đầu đánh máy
+const cakeButton = document.getElementById("goCutCakeBtn");
+
+if (cakeButton) {
+    cakeButton.hidden = true;
+    cakeButton.classList.remove("show");
+}
+
+// Dòng 1: Hứ
+typeText(title1, 180, function () {
+
+    // Dòng 2: lời chúc sinh nhật
+    typingTimers.push(setTimeout(function () {
+
+        typeText(title2, 75, function () {
+
+            // Nội dung lời chúc dài
+            typingTimers.push(setTimeout(function () {
+
+                typeText(paragraph, 28, function () {
+
+                    // Chỉ hiện nút khi toàn bộ lời chúc đã đánh máy xong
+                    if (cakeButton) {
+                        cakeButton.hidden = false;
+                        cakeButton.classList.add("show");
+                    }
+
+                });
+
+            }, 350));
+
+        });
+
+    }, 350));
+
+});
+
         }
+        const cakeButton = document.getElementById("goCutCakeBtn");
+
+if (cakeButton) {
+    cakeButton.hidden = false;
+    cakeButton.classList.add("show");
+}
     </script>
 
 </body>
