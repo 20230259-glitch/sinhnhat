@@ -175,7 +175,7 @@ setInterval(createMyFallingWord, 700);
 
     /* ===== CẤU HÌNH GAME ===== */
 
-    const TARGET_SCORE = 5;
+    const TARGET_SCORE = 21;
     const MAX_MISSES = 3;
 
     const PLAYER_WIDTH = 58;
